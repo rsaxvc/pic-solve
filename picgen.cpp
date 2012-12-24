@@ -1,7 +1,9 @@
+#include "serializer.h"
+#include "arr2d.h"
+
 #include <iostream>
 #include <cstdlib>
 
-#include "arr2d.h"
 
 int main( int n, const char * args[] )
 {
@@ -17,9 +19,6 @@ if( n != 3 )
 width = atoi( args[1] );
 height = atoi( args[2] );
 
-std::cout<<"W:"<<width<<std::endl;
-std::cout<<"H:"<<height<<std::endl;
-
 arr2d<bool> array(width,height,false);
 srand(time(NULL));
 
@@ -29,11 +28,12 @@ for( size_t count = width * height / 3; count > 0; --count )
 	array(rand()%width,rand()%height)=true;
 	}
 
+serializer s( width, height );
+
 //print rules for horizontal lines
 for( size_t y = 0; y < height; ++y )
 	{
-	std::cout<<"Y"<<y<<":";
-	bool once = false;
+	std::vector<int> hrule;
 	size_t count = 0;
 	for( size_t x = 0; x < width; ++x )
 		{
@@ -45,26 +45,22 @@ for( size_t y = 0; y < height; ++y )
 			{
 			if( count )
 				{
-				if( once )std::cout<<",";
-				std::cout<<count;
-				once = true;
+				hrule.push_back(count);
 				}
 			count = 0;
 			}
 		}
 	if( count )
 		{
-		if( once )std::cout<<",";
-		std::cout<<count;
+		hrule.push_back(count);
 		}
-	std::cout<<std::endl;
+	s.insert_hrule( y, hrule );
 	}
 
 //print rules for vertical lines
 for( size_t x = 0; x < width; ++x )
 	{
-	std::cout<<"X"<<x<<":";
-	bool once = false;
+	std::vector<int> vrule;
 	size_t count = 0;
 	for( size_t y = 0; y < height; ++y )
 		{
@@ -76,21 +72,19 @@ for( size_t x = 0; x < width; ++x )
 			{
 			if( count )
 				{
-				if( once )std::cout<<",";
-				std::cout<<count;
-				once = true;
+				vrule.push_back(count);
 				}
 			count = 0;
 			}
 		}
 	if( count )
 		{
-		if( once )std::cout<<",";
-		std::cout<<count;
+		vrule.push_back(count);
 		}
-	std::cout<<std::endl;
+	s.insert_vrule( x, vrule );
 	}
 
+std::cout<<s;
 
 //print the solved map
 for( size_t y = 0; y < height; ++y )
