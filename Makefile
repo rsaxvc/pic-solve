@@ -1,6 +1,7 @@
 CXX=g++
-CXXFLAGS= -c -pg
+CXXFLAGS= -c -O2
 CC=$(CXX)
+LDFLAGS=
 BUILDS=picgen picsolve
 SOURCES=`ls *.cpp`
 all: .depend $(BUILDS)
