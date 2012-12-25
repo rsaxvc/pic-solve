@@ -81,6 +81,7 @@ static bool solution_valid( arr2d<bool> & a, const serializer & s )
 assert( s.getHeight() == a.getHeight() );
 assert( s.getWidth()  == a.getWidth() );
 bool * buf;
+bool retn = true;
 
 if( a.getWidth() > a.getHeight() )
 	buf = new bool[ a.getWidth() ];
@@ -90,31 +91,30 @@ else
 for( size_t y = 0; y < a.getHeight(); ++y )
 	{
 	for( size_t x = 0; x < a.getWidth(); ++x )
-		{
 		buf[x] = a(x,y);
-		}
 
 	if( !line_valid( buf, a.getWidth(), s.hrules[y] ) )
 		{
-		return false;
+		retn = false;
+		goto done;
 		}
 	}
 
 for( size_t x = 0; x < a.getWidth(); ++ x )
 	{
 	for( size_t y = 0; y < a.getHeight(); ++y )
-		{
 		buf[y] = a(x,y);
-		}
+
 	if( !line_valid( buf, a.getHeight(), s.vrules[x] ) )
 		{
-		return false;
+		retn = false;
+		goto done;
 		}
 	}
 
+done:
 delete[]( buf );
-
-return true;
+return retn;
 }
 
 /*does not violate any rules*/
@@ -123,6 +123,7 @@ static bool solution_plausible( arr2d<bool> & a, const serializer & s )
 assert( s.getHeight() == a.getHeight() );
 assert( s.getWidth()  == a.getWidth() );
 bool * buf;
+bool retn = true;
 
 if( a.getWidth() > a.getHeight() )
 	buf = new bool[ a.getWidth() ];
@@ -135,20 +136,26 @@ for( size_t y = 0; y < a.getHeight(); ++y )
 		buf[x] = a(x,y);
 
 	if( !line_plausible( buf, a.getWidth(), s.hrules[y] ) )
-		return false;
+		{
+		retn = false;
+		goto done;
+		}
 	}
 
-bool * vbuf = new bool[ a.getHeight() ];
 for( size_t x = 0; x < a.getWidth(); ++ x )
 	{
 	for( size_t y = 0; y < a.getHeight(); ++y )
 		buf[y] = a(x,y);
 	if( !line_plausible( buf, a.getHeight(), s.vrules[x] ) )
-		return false;
+		{
+		retn = false;
+		goto done;
+		}
 	}
 
+done:
 delete[]( buf );
-return true;
+return retn;
 }
 
 bool recurse( arr2d<bool> & start, const serializer & s )
