@@ -80,35 +80,39 @@ static bool solution_valid( arr2d<bool> & a, const serializer & s )
 {
 assert( s.getHeight() == a.getHeight() );
 assert( s.getWidth()  == a.getWidth() );
+bool * buf;
 
-bool * hbuf = new bool[ a.getWidth() ];
+if( a.getWidth() > a.getHeight() )
+	buf = new bool[ a.getWidth() ];
+else
+	buf = new bool[ a.getHeight() ];
+
 for( size_t y = 0; y < a.getHeight(); ++y )
 	{
 	for( size_t x = 0; x < a.getWidth(); ++x )
 		{
-		hbuf[x] = a(x,y);
+		buf[x] = a(x,y);
 		}
 
-	if( !line_valid( hbuf, a.getWidth(), s.hrules[y] ) )
+	if( !line_valid( buf, a.getWidth(), s.hrules[y] ) )
 		{
 		return false;
 		}
 	}
-delete[]( hbuf );
 
-bool * vbuf = new bool[ a.getHeight() ];
 for( size_t x = 0; x < a.getWidth(); ++ x )
 	{
 	for( size_t y = 0; y < a.getHeight(); ++y )
 		{
-		vbuf[y] = a(x,y);
+		buf[y] = a(x,y);
 		}
-	if( !line_valid( vbuf, a.getHeight(), s.vrules[x] ) )
+	if( !line_valid( buf, a.getHeight(), s.vrules[x] ) )
 		{
 		return false;
 		}
 	}
-delete[]( vbuf );
+
+delete[]( buf );
 
 return true;
 }
