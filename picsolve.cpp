@@ -32,6 +32,16 @@ if( count )
 return rule;
 }
 
+static int count_points_in_rule( const std::vector<int> & rule )
+{
+int retn = 0;
+for( size_t i = 0; i < rule.size(); ++i )
+	{
+	retn += rule[i];
+	}
+return retn;
+}
+
 static bool line_plausible( bool * buf, size_t bufsz, const std::vector<int> & rules )
 {
 std::vector<int> board_rules = build_rules( buf, bufsz );
@@ -54,8 +64,8 @@ else if( board_rules.size() > rules.size() )
 	}
 else
 	{
-	//this one is a little more complicated, assume true for now
-	return true;
+	//this one is a little more complicated, if there's too many points, give up
+	return count_points_in_rule( board_rules ) <= count_points_in_rule( rules );
 	}
 return true;
 }
