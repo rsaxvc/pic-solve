@@ -7,10 +7,13 @@ template <typename T>
 class arr2d
 	{
 	public:
+		arr2d( const arr2d & orig );
 		arr2d( size_t w, size_t h ){cons(w,h);}
 		arr2d( size_t w, size_t h, const T & dflt );
 		~arr2d(){delete[] dptr;}
 		T & operator()(size_t x, size_t y);
+		size_t getHeight()const{return height;}
+		size_t getWidth()const{return width;}
 	private:
 		void cons( size_t w, size_t h );
 		inline size_t locate(size_t x, size_t y ){return y * width + x;}
@@ -31,6 +34,16 @@ void arr2d<T>::cons( size_t w, size_t h )
 width = w;
 height = h;
 dptr = new T[width*height];
+}
+
+template <typename T>
+arr2d<T>::arr2d( const arr2d & orig )
+{
+cons( orig.width, orig.height );
+for( size_t i = 0; i < width * height; ++i )
+	{
+	dptr[i]=orig.dptr[i];
+	}
 }
 
 template <typename T>
