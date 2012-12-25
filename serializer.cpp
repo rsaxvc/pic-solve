@@ -78,6 +78,8 @@ for( size_t x = 0; x < s.width; ++x )
 	s.vrules.push_back(parse_string( linebuf ));
 	}
 
+s.check_counts();
+
 return is;
 
 fail:
@@ -118,4 +120,19 @@ for( size_t x = 0; x < s.width; ++x )
 	}
 
 return out;
+}
+
+void serializer::check_counts( void )
+{
+int hcount = 0;
+for( size_t y = 0; y < hrules.size(); ++y )
+	for( size_t i = 0; i < hrules[y].size(); ++i )
+		hcount += hrules[y][i];
+
+int vcount = 0;
+for( size_t x = 0; x < vrules.size(); ++x )
+	for( size_t i = 0; i < vrules[x].size(); ++i )
+		vcount += hrules[x][i];
+
+assert( vcount == hcount );
 }
