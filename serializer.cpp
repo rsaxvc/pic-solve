@@ -132,7 +132,7 @@ for( size_t y = 0; y < hrules.size(); ++y )
 int vcount = 0;
 for( size_t x = 0; x < vrules.size(); ++x )
 	for( size_t i = 0; i < vrules[x].size(); ++i )
-		vcount += hrules[x][i];
+		vcount += vrules[x][i];
 
 assert( vcount == hcount );
 }
