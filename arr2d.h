@@ -2,6 +2,7 @@
 #define ARR2D_H
 
 #include <cstddef>
+#include <ostream>
 
 template <typename T>
 class arr2d
@@ -14,6 +15,9 @@ class arr2d
 		T & operator()(size_t x, size_t y);
 		size_t getHeight()const{return height;}
 		size_t getWidth()const{return width;}
+
+		template<typename M>
+		friend std::ostream & operator<<( std::ostream & os, const arr2d & a );
 	private:
 		void cons( size_t w, size_t h );
 		inline size_t locate(size_t x, size_t y ){return y * width + x;}
@@ -21,6 +25,21 @@ class arr2d
 		size_t width;
 		size_t height;
 	};
+
+template <typename T>
+std::ostream & operator<<( std::ostream & os, arr2d<T> & a )
+{
+for(size_t y = 0; y < a.getHeight(); ++y )
+	{
+	for(size_t x = 0; x < a.getWidth(); ++x )
+		{
+		if(x!=0)os<<',';
+		os<<a(x,y)?'X':' ';
+		}
+	os<<std::endl;
+	}
+return os;
+}
 
 template <typename T>
 T & arr2d<T>::operator()( size_t x, size_t y )
