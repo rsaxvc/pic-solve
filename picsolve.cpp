@@ -42,6 +42,14 @@ for( size_t i = 0; i < rule.size(); ++i )
 return retn;
 }
 
+static int count_slots_used_by_rule( const std::vector<int> & rule )
+{
+if( rule.size() == 0 )
+	return 0;
+else
+	return rule.size() - 1 + count_points_in_rule( rule );
+}
+
 static bool line_plausible( bool * buf, size_t bufsz, const std::vector<int> & rules )
 {
 std::vector<int> board_rules = build_rules( buf, bufsz );
@@ -189,6 +197,42 @@ for( size_t x = 0; x < start.getWidth(); ++x )
 return false;
 }
 
+static void apply_hrule( size_t row, std::vector<int> rule, arr2d<bool> & a )
+{
+size_t x = 0;
+size_t count;
+
+assert( count_slots_used_by_rule( rule ) == a.getWidth() );
+
+for( size_t i = 0; i < rule.size(); ++i )
+	{
+	count = rule[i];
+	for( size_t j = 0; j < rule[i]; ++j )
+		{
+		a(x++,row) = true;
+		}
+	x++;//skip a space
+	}
+}
+
+static void apply_vrule( size_t col, std::vector<int> rule, arr2d<bool> & a )
+{
+size_t y = 0;
+size_t count;
+
+assert( count_slots_used_by_rule( rule ) == a.getWidth() );
+
+for( size_t i = 0; i < rule.size(); ++i )
+	{
+	count = rule[i];
+	for( size_t j = 0; j < rule[i]; ++j )
+		{
+		a(col,y++) = true;
+		}
+	y++;//skip a space
+	}
+}
+
 int main( int n, const char * args[] )
 {
 int width;
@@ -206,6 +250,14 @@ ifstr>>s;
 ifstr.close();
 
 arr2d<bool> array(s.getWidth(),s.getHeight(),false);
+
+for( size_t x = 0; x < s.getWidth(); ++x )
+	if( count_slots_used_by_rule( s.vrules[x] ) == s.getHeight() )
+		apply_vrule( x, s.vrules[x], array );
+
+for( size_t y = 0; y < s.getHeight(); ++y )
+	if( count_slots_used_by_rule( s.hrules[y] ) == s.getWidth() )
+		apply_hrule( y, s.hrules[y], array );
 
 bool ret = recurse( array, s );
 if( ret )
